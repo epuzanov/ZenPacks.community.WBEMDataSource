@@ -1,7 +1,7 @@
 ################################################################################
 #
 # This program is part of the WBEMDataSource Zenpack for Zenoss.
-# Copyright (C) 2009, 2010 Egor Puzanov.
+# Copyright (C) 2009, 2010, 2011 Egor Puzanov.
 #
 # This program can be used under the GNU General Public License version 2
 # You can find full information here: http://www.zenoss.com/oss
@@ -12,9 +12,9 @@ __doc__="""WBEMClient
 
 Gets WBEM performance data.
 
-$Id: WBEMClient.py,v 2.9 2010/07/01 13:58:53 egor Exp $"""
+$Id: WBEMClient.py,v 2.10 2011/01/18 22:40:53 egor Exp $"""
 
-__version__ = "$Revision: 2.9 $"[11:-2]
+__version__ = "$Revision: 2.10 $"[11:-2]
 
 import Globals
 from Products.ZenUtils.Utils import zenPath
@@ -206,7 +206,7 @@ class WBEMClient(BaseClient):
                                             query,
                                             namespace=namespace)
         d.addCallback(parse)
-        d.addErrback(self.parseError, classname, instMap)
+        d.addErrback(self.parseError, query, instMap)
         return d
 
 
