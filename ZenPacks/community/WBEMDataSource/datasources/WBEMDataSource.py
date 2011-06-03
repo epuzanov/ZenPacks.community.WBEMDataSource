@@ -13,9 +13,9 @@ __doc__="""WBEMDataSource
 Defines attributes for how a datasource will be graphed
 and builds the nessesary DEF and CDEF statements for it.
 
-$Id: WBEMDataSource.py,v 2.0 2011/05/03 23:00:09 egor Exp $"""
+$Id: WBEMDataSource.py,v 2.2 2011/06/03 22:19:04 egor Exp $"""
 
-__version__ = "$Revision: 2.0 $"[11:-2]
+__version__ = "$Revision: 2.2 $"[11:-2]
 
 from Products.ZenModel.RRDDataSource import RRDDataSource
 from ZenPacks.community.SQLDataSource.datasources import SQLDataSource
@@ -84,19 +84,21 @@ class WBEMDataSource(SQLDataSource.SQLDataSource):
 
     def getQueryInfo(self, context):
         try:
-            sql = self.getCommand(context,self.instance.encode('string-escape'))
+            sql = self.getCommand(context,self.instance) #.encode('string-escape'))
             if sql.upper().startswith('SELECT '):
-                sqlp, kbs = self.parseSqlQuery(sql)
+                try: sqlp, kbs = self.parseSqlQuery(sql)
+                except: sqlp, kbs = sql, {}
                 return sql, sqlp, kbs, self.getConnectionString(context)
             namespace, classname, where = PATHPAT.match(sql).groups('')
             cs = self.getConnectionString(context, namespace)
-            cols=','.join([dp.getAliasNames() and dp.getAliasNames()[0] or dp.id \
-                                for dp in self.getRRDDataPoints()] or ['*'])
-            kbs = eval('(lambda **kws:kws)(%s)'%where.encode('string-escape'))
-            if kbs and cols != '*': cols = cols + ',' + ','.join(kbs.keys())
-            if where:
-                where = ' WHERE ' + where.replace(',',' AND ')
-            sqlp = 'SELECT %s FROM %s'%(cols, classname)
-            return sqlp + where, sqlp, kbs, cs
-        except:
-            return '', '', {}, ''
+            cols = set([dp.getAliasNames() and dp.getAliasNames()[0] or dp.id \
+                                            for dp in self.getRRDDataPoints()])
+            try: kbs = eval('(lambda **kws:kws)(%s)'%where.encode('string-escape'))
+            except: kbs = {}
+            if cols: cols.update(set(kbs.keys()))
+            sqlp = 'SELECT %s FROM %s'%(','.join(cols) or '*', classname)
+            if where: where = ' WHERE %s'%where.replace(',', ' AND ')
+            sql = ''.join((sqlp, where))
+            if kbs: return sql, sqlp, kbs, cs
+            else: return sql, sql, kbs, cs
+        except: return '', '', {}, ''
