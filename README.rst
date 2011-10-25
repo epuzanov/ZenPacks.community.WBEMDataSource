@@ -5,8 +5,8 @@ ZenPacks.community.WBEMDataSource
 About
 =====
 
-This Functionality ZenPack provides a new **WBEM** data source and **zWBEMProxy** 
-zProperty.
+This Functionality ZenPack provides a new **WBEM** data source and **zWbemProxy**, 
+**zWbemPort**, **zWbemUseSSL** and **zWbemMonitorIgnore** zProperties.
 
 
 Requirements
@@ -87,6 +87,7 @@ get single Instance for CPU0, WQL syntax example:
 get single Instance from specific namespace:
 
     ::
+
         root/cimv2:CIM_Processor.DeviceID="CPU0"
 
 
