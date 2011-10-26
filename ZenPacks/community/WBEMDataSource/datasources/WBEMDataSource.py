@@ -13,9 +13,9 @@ __doc__="""WBEMDataSource
 Defines attributes for how a datasource will be graphed
 and builds the nessesary DEF and CDEF statements for it.
 
-$Id: WBEMDataSource.py,v 2.3 2011/10/25 17:18:45 egor Exp $"""
+$Id: WBEMDataSource.py,v 2.4 2011/10/26 15:54:55 egor Exp $"""
 
-__version__ = "$Revision: 2.3 $"[11:-2]
+__version__ = "$Revision: 2.4 $"[11:-2]
 
 from Products.ZenModel.RRDDataSource import RRDDataSource
 from ZenPacks.community.SQLDataSource.datasources import SQLDataSource
@@ -94,7 +94,7 @@ class WBEMDataSource(SQLDataSource.SQLDataSource):
             cols = set([dp.getAliasNames() and dp.getAliasNames()[0] or dp.id \
                                             for dp in self.getRRDDataPoints()])
             try:
-                if r'""' not in where: where = where.encode('string-escape')
+                if r'\\' in where: where = where.encode('string-escape')
                 kbs = eval('(lambda **kws:kws)(%s)'%where)
             except: kbs = {}
             if cols: cols.update(set(kbs.keys()))
