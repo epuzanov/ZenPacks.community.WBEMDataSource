@@ -1,7 +1,7 @@
 ################################################################################
 #
 # This program is part of the WBEMDataSource Zenpack for Zenoss.
-# Copyright (C) 2009, 2010, 2011 Egor Puzanov.
+# Copyright (C) 2009-2012 Egor Puzanov.
 #
 # This program can be used under the GNU General Public License version 2
 # You can find full information here: http://www.zenoss.com/oss
@@ -12,9 +12,9 @@ __doc__="""WBEMPlugin
 
 wrapper for SQLPlugin
 
-$Id: WBEMPlugin.py,v 2.0 2011/05/03 22:59:16 egor Exp $"""
+$Id: WBEMPlugin.py,v 2.1 2012/03/20 20:17:05 egor Exp $"""
 
-__version__ = "$Revision: 2.0 $"[11:-2]
+__version__ = "$Revision: 2.1 $"[11:-2]
 
 from ZenPacks.community.SQLDataSource.SQLPlugin import SQLPlugin
 
@@ -53,5 +53,6 @@ class WBEMPlugin(SQLPlugin):
                         kbstrings.append('%s=%s'%(kbn, kbv))
                     sql = sql + ' WHERE %s'%' AND '.join(kbstrings)
             cs = CSTMPL%(scheme, port, user, password, host, namespace)
+            columns = dict(zip(columns.values(), columns.keys()))
             queries[tname] = (sql, kbs, cs, columns)
         return queries
