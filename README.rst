@@ -2,6 +2,13 @@
 ZenPacks.community.WBEMDataSource
 ================================
 
+DEPRECATION WARNING
+===================
+
+Use of WBEM data source is deprecated. Please use
+`SQL <http://community.zenoss.org/docs/DOC-5913>`_ data source with **pywbemdb**
+DB-API 2.0 interface instead.
+
 About
 =====
 
